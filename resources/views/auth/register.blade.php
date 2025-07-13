@@ -29,6 +29,17 @@
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
+            <div style="margin-top: 25px;">
+            {!! NoCaptcha::renderJs() !!}
+            {!! NoCaptcha::display() !!}
+
+            @if ($errors->has('g-recaptcha-response'))
+                <span class="text-danger">
+                    {{ $errors->first('g-recaptcha-response') }}
+                </span>
+            @endif
+            </div>
+
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-label for="terms">
