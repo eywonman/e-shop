@@ -35,8 +35,11 @@
             </main>
         </div>
 
-        @stack('modals')
+        <!-- SweetAlert2 CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+        @stack('modals')
+        @livewireStyles
         @livewireScripts
     </body>
 </html>

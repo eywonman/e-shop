@@ -64,9 +64,9 @@
             <h2 class="text-3xl font-bold text-center mb-10 text-white">🎸 Featured Guitars</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4">
                 @foreach ([
-                    ['name' => 'Fender Stratocaster', 'price' => '₱35,000', 'image' => 'strat.jpg'],
-                    ['name' => 'Gibson Les Paul', 'price' => '₱42,000', 'image' => 'lespaul.jpg'],
-                    ['name' => 'Yamaha Acoustic', 'price' => '₱18,500', 'image' => 'yamaha.jpg'],
+                    ['name' => 'Fender Stratocaster', 'price' => '₱7,000', 'image' => 'strat.jpg'],
+                    ['name' => 'Gibson Les Paul', 'price' => '₱7,500', 'image' => 'lespaul.jpg'],
+                    ['name' => 'Yamaha Acoustic', 'price' => '₱6,300', 'image' => 'yamaha.jpg'],
                 ] as $product)
                     <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
                         <img src="{{ asset('images/' . $product['image']) }}" alt="{{ $product['name'] }}" class="w-full h-52 object-cover">

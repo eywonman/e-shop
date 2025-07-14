@@ -15,7 +15,6 @@
                     class="block text-gray-800 dark:text-gray-200 hover:text-blue-600 font-medium">
                     🛒 View Cart
                 </a>
-
             </nav>
         </div>
 
@@ -27,11 +26,5 @@
             {{-- Livewire Guitar List --}}
             <livewire:guitar-list />
         </div>
-
-        <script>
-            window.addEventListener('notify', event => {
-                alert(event.detail.message);
-            });
-        </script>
     </div>
 </x-app-layout>
