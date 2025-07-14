@@ -20,61 +20,47 @@ class OrderController extends Controller
 
     public function checkout(Request $request)
     {
-        $user = Auth::user();
+        $request->validate([
+            'address' => 'required|string|max:255',
+            // No need to validate payment_method since it's fixed to COD
+        ]);
 
-        $cartItems = Cart::where('user_id', $user->id)->with('guitar')->get();
+        $user = Auth::user();
+        $cartItems = Cart::with('guitar')->where('user_id', $user->id)->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->back()->with('error', 'Your cart is empty.');
+            return back()->with('error', 'Your cart is empty.');
         }
 
         // Calculate total price
-        $totalPrice = 0;
+        $total = 0;
         foreach ($cartItems as $item) {
-            $totalPrice += $item->guitar->price * $item->quantity;
+            $total += $item->guitar->price * $item->quantity;
         }
 
-        DB::beginTransaction();
+        // Create Order
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total_price' => $total,
+            'status' => 'pending',
+            'address' => $request->address,
+            'payment_method' => 'cod',
+        ]);
 
-        try {
-            // Create Order
-            $order = Order::create([
-                'user_id' => $user->id,
-                'total_price' => $totalPrice,
-                'status' => 'pending', // or any status you want
+        // Create Order Items
+        foreach ($cartItems as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'guitar_id' => $item->guitar_id,
+                'quantity' => $item->quantity,
+                'price' => $item->guitar->price,
             ]);
-
-            // Create Order Items and adjust stock
-            foreach ($cartItems as $item) {
-                if ($item->quantity > $item->guitar->stock) {
-                    // Not enough stock, rollback & return error
-                    DB::rollBack();
-                    return redirect()->back()->with('error', 'Not enough stock for ' . $item->guitar->name);
-                }
-
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'guitar_id' => $item->guitar->id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->guitar->price,
-                ]);
-
-                // Decrease stock
-                $item->guitar->decrement('stock', $item->quantity);
-            }
-
-            // Clear user's cart
-            Cart::where('user_id', $user->id)->delete();
-
-            DB::commit();
-
-            return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
         }
+
+        // Clear Cart
+        Cart::where('user_id', $user->id)->delete();
+
+        return redirect()->route('orders.index')->with('success', 'Order placed successfully!');
     }
 
     public function cancel($id)

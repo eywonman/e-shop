@@ -68,19 +68,51 @@
                     </tbody>
                 </table>
 
-                <div class="mt-6 flex justify-end space-x-4">
+                <div class="mt-6 space-y-6">
+                {{-- Clear Cart --}}
+                <div class="flex justify-end">
                     <form method="POST" action="{{ route('cart.clear') }}">
                         @csrf
                         @method('DELETE')
-                        <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Clear Cart</button>
-                    </form>
-                    <form method="POST" action="{{ route('checkout') }}">
-                        @csrf
-                        <button type="submit" 
-                                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                            Checkout
+                        <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                            Clear Cart
                         </button>
                     </form>
+                </div>
+
+                {{-- ✅ Checkout Form --}}
+                <form method="POST" action="{{ route('checkout') }}"
+                    class="max-w-xl mx-auto bg-gray-50 dark:bg-gray-700 p-4 rounded shadow">
+                    @csrf
+
+                    {{-- Delivery Address --}}
+                    <div class="mb-4">
+                        <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">
+                            Delivery Address
+                        </label>
+                        <textarea name="address" required
+                                class="w-full p-2 border border-gray-300 rounded dark:bg-gray-800 dark:text-white"
+                                placeholder="Enter your delivery address..."></textarea>
+                    </div>
+
+                    {{-- Visible Fixed Payment Method --}}
+                    <div class="mb-4">
+                        <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">
+                            Payment Method
+                        </label>
+                        <input type="text" name="payment_method" value="Cash on Delivery" readonly
+                            class="w-full p-2 border border-gray-300 rounded bg-gray-100 dark:bg-gray-800 dark:text-white cursor-not-allowed" />
+                    </div>
+
+                    {{-- Confirm Button --}}
+                    <div class="flex justify-end">
+                        <button type="submit"
+                                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition duration-200">
+                            Confirm Checkout
+                        </button>
+                    </div>
+                </form>
+            </div>
 
                 </div>
             </div>

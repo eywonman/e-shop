@@ -20,25 +20,19 @@ Route::middleware([
 });
 
 
-
-Route::middleware(['auth', 'verified'])->get('/guitars', [GuitarController::class, 'index'])->name('guitars.index');
-
-
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/guitars', [GuitarController::class, 'index'])->name('guitars.index');
+
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+
+    Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
-
-Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout')->middleware('auth');
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index')->middleware('auth');
-Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
-
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
 
 Route::fallback(function () {
