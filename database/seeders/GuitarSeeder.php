@@ -9,6 +9,6 @@ class GuitarSeeder extends Seeder
 {
     public function run(): void
     {
-        Guitar::factory()->count(10)->create(); // Or use static data
+        Guitar::factory()->count(9)->create(); // Or use static data
     }
 }
