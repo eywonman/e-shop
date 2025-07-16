@@ -43,19 +43,26 @@ class GuitarResource extends Resource
                     ->maxLength(255),
 
                 TextInput::make('price')
+                    ->label('Price (₱)')
                     ->required()
                     ->numeric()
-                    ->prefix('₱'),
+                    ->prefix('₱')
+                    ->minValue(1)
+                    ->maxValue(999999999999)
+                    ->step(0.01), // allow cents
 
                 TextInput::make('stock')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100000), // optional max stock
 
                 TextInput::make('image_url')
                     ->label('Image URL')
                     ->url()
                     ->maxLength(2048)
-                    ->nullable(),
+                    ->nullable()
+                    ->rules(['nullable', 'url', 'max:2048']),
             ]);
     }
 

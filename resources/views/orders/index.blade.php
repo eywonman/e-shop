@@ -11,20 +11,23 @@
 
                 {{-- Order Header --}}
                 <div class="mb-4">
-                    <h3 class="text-xl font-semibold">Order #{{ $order->id }}</h3>
-                    <p>Status: 
-                        <span class="font-medium
+                    <h3 class="text-xl font-extrabold text-slate-800 dark:text-slate-200">
+                        Order #{{ $order->id }}
+                    </h3>
+
+                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                        Status:
+                        <span class="font-bold
                             @if ($order->status === 'pending')
-                                text-yellow-500
+                                text-yellow-500 dark:text-yellow-400
                             @elseif (in_array($order->status, ['declined', 'cancelled']))
-                                text-red-600
+                                text-red-600 dark:text-red-400
                             @else
-                                text-green-600
+                                text-green-600 dark:text-green-400
                             @endif">
                             {{ ucfirst($order->status) }}
                         </span>
-
-                    </p> 
+                    </p>
                 </div>
 
                 {{-- Items List --}}
@@ -36,8 +39,12 @@
                                      alt="{{ $item->guitar->name }}"
                                      class="w-16 h-16 object-cover rounded shadow" />
                                 <div>
-                                    <div class="font-semibold text-gray-800 dark:text-gray-200">{{ $item->guitar->name }}</div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $item->guitar->brand }}</div>
+                                    <div class="font-semibold text-gray-800 dark:text-gray-200">
+                                        {{ $item->guitar->name }}
+                                    </div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ $item->guitar->brand }}
+                                    </div>
                                 </div>
                             </div>
                             <div class="text-right text-sm text-gray-700 dark:text-gray-300">
@@ -50,7 +57,7 @@
 
                 {{-- Footer: Total & Cancel --}}
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between border-t pt-4">
-                    <div class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 md:mb-0">
+                    <div class="text-lg font-bold text-gray-800 dark:text-white mb-4 md:mb-0">
                         Order Total: ₱{{ number_format($order->total_price, 2) }}
                     </div>
 
@@ -66,7 +73,9 @@
                                 </button>
                             </form>
                         @else
-                            <span class="text-gray-500 italic">Order cannot be cancelled</span>
+                            <span class="text-gray-500 dark:text-gray-400 italic">
+                                Order cannot be cancelled
+                            </span>
                         @endif
                     </div>
                 </div>
