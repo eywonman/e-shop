@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,8 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-    $this->call([
-        GuitarSeeder::class,
-    ]);
-}
+        // Create roles if they don't exist
+        Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'user']);
+
+        // Assign "admin" role to the first user (or create one)
+        $user = User::firstOrCreate(
+            ['email' => 'arron.figueroa00@gmail.com'],
+            ['name' => 'Admin', 'password' => bcrypt('password')]
+        );
+
+        $user->assignRole('admin');
+    }
 }

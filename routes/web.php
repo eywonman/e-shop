@@ -4,6 +4,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\GuitarController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminOtpSessionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +34,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/verify-otp', [AdminOtpSessionController::class, 'showForm'])->name('admin.otp.form');
+    Route::post('/admin/verify-otp', [AdminOtpSessionController::class, 'verify'])->name('admin.otp.verify');
+    Route::post('/admin/resend-otp', [AdminOtpSessionController::class, 'resend'])->name('admin.otp.resend');
+});
 
 
 Route::fallback(function () {

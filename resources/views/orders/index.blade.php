@@ -13,10 +13,18 @@
                 <div class="mb-4">
                     <h3 class="text-xl font-semibold">Order #{{ $order->id }}</h3>
                     <p>Status: 
-                        <span class="font-medium {{ $order->status === 'cancelled' ? 'text-red-600' : 'text-green-600' }}">
+                        <span class="font-medium
+                            @if ($order->status === 'pending')
+                                text-yellow-500
+                            @elseif (in_array($order->status, ['declined', 'cancelled']))
+                                text-red-600
+                            @else
+                                text-green-600
+                            @endif">
                             {{ ucfirst($order->status) }}
                         </span>
-                    </p>
+
+                    </p> 
                 </div>
 
                 {{-- Items List --}}
