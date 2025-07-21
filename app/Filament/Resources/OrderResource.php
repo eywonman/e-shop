@@ -15,7 +15,7 @@ use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderAccepted;
 use App\Mail\OrderDeclined;
-
+use Spatie\Activitylog\Facades\Activity;
 
 class OrderResource extends Resource
 {
@@ -32,63 +32,57 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-    Forms\Components\Select::make('user_id')
-        ->label('User')
-        ->relationship('user', 'email')
-        ->searchable()
-        ->required()
-        ->disabled(), 
+            Forms\Components\TextInput::make('user_email')
+                ->label('User Email')
+                ->disabled()
+                ->afterStateHydrated(function ($component, $state, $record) {
+                    $component->state(optional($record->user)->email);
+                }),
 
-    Forms\Components\TextInput::make('address')
-        ->required()
-        ->disabled(),
-
-    // ✅ Show order items in a Repeater (read-only)
-    Forms\Components\Repeater::make('items')
-        ->label('Order Items')
-        ->relationship() 
-        ->schema([
-            Forms\Components\Select::make('guitar_id')
-            ->label('Guitar')
-            ->relationship('guitar', 'name')
-            ->disabled(),
-
-            Forms\Components\TextInput::make('quantity')
-                ->label('Quantity')
+            Forms\Components\TextInput::make('address')
+                ->required()
                 ->disabled(),
 
-            Forms\Components\TextInput::make('price')
-                ->label('Price')
+            Forms\Components\Repeater::make('items')
+                ->label('Order Items')
+                ->relationship()
+                ->schema([
+                    Forms\Components\TextInput::make('guitar_name')
+                        ->label('Guitar')
+                        ->disabled()
+                        ->afterStateHydrated(function ($component, $state, $record) {
+                            $component->state(optional($record->guitar)->name);
+                        }),
+
+                    Forms\Components\TextInput::make('quantity')
+                        ->label('Quantity')
+                        ->disabled(),
+
+                    Forms\Components\TextInput::make('price')
+                        ->label('Price')
+                        ->prefix('₱')
+                        ->disabled(),
+                ])
+                ->columns(3)
+                ->disabled()
+                ->dehydrated(false),
+
+            Forms\Components\TextInput::make('total_price')
+                ->numeric()
                 ->prefix('₱')
+                ->required()
                 ->disabled(),
-        ])
-        ->columns(3)
-        ->disabled() // prevents adding/removing items
-        ->dehydrated(false), // prevents form update
 
-        Forms\Components\TextInput::make('total_price')
-        ->numeric()
-        ->prefix('₱')
-        ->required()
-        ->disabled(),
+            Forms\Components\TextInput::make('payment_method')
+                ->label('Payment Method')
+                ->disabled(),
 
-        Forms\Components\Select::make('payment_method')
-        ->options([
-            'cod' => 'Cash on Delivery',
-        ])
-        ->required()
-        ->disabled(),
-
-        Forms\Components\Select::make('status')
-        ->options([
-            'pending' => 'Pending',
-            'accepted' => 'Accepted',
-            'declined' => 'Declined',
-        ])
-        ->required(),
-]);
-
+            Forms\Components\TextInput::make('status')
+                ->disabled(),
+        ]);
     }
+
+
 
     public static function table(Table $table): Table
     {
@@ -126,6 +120,14 @@ class OrderResource extends Resource
                     ->requiresConfirmation()
                     ->action(function ($record) {
                         $record->update(['status' => 'accepted']);
+
+                        // ✅ Audit log
+                        Activity::causedBy(auth()->user())
+                            ->performedOn($record)
+                            ->withProperties(['order_id' => $record->id])
+                            ->log('Accepted an order');
+
+                        // Send email
                         Mail::to($record->user->email)->send(new OrderAccepted($record));
                     }),
 
@@ -136,23 +138,26 @@ class OrderResource extends Resource
                     ->visible(fn ($record) => $record->status === 'pending')
                     ->requiresConfirmation()
                     ->action(function ($record) {
-                        // Restock each guitar item
+                        // Restock guitars
                         foreach ($record->items as $item) {
                             if ($item->guitar) {
                                 $item->guitar->increment('stock', $item->quantity);
                             }
                         }
 
-                        // Update status
                         $record->update(['status' => 'declined']);
+
+                        // ✅ Audit log
+                        Activity::causedBy(auth()->user())
+                            ->performedOn($record)
+                            ->withProperties(['order_id' => $record->id])
+                            ->log('Declined an order');
 
                         // Send email
                         Mail::to($record->user->email)->send(new OrderDeclined($record));
                     }),
 
-
                 Tables\Actions\ViewAction::make(),
-
             ]);
     }
 
