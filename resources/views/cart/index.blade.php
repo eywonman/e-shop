@@ -86,12 +86,28 @@
                         @csrf
 
                         <div class="mb-4">
-                            <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">
-                                Delivery Address
-                            </label>
-                            <textarea name="address" required
-                                class="w-full p-2 border border-gray-300 rounded dark:bg-gray-800 dark:text-white"
-                                placeholder="Enter your delivery address..."></textarea>
+                            <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">House Number / Lot & Block</label>
+                            <input type="text" name="house_number" required class="w-full p-2 border rounded dark:bg-gray-800 dark:text-white" placeholder="e.g. Lot 10 Block 5" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">Street Name</label>
+                            <input type="text" name="street_name" required class="w-full p-2 border rounded dark:bg-gray-800 dark:text-white" placeholder="e.g. Mabini St." />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">Barangay</label>
+                            <input type="text" name="barangay" required class="w-full p-2 border rounded dark:bg-gray-800 dark:text-white" placeholder="e.g. Brgy. 123" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">City / Municipality</label>
+                            <input type="text" name="city" required class="w-full p-2 border rounded dark:bg-gray-800 dark:text-white" placeholder="e.g. Quezon City" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block font-semibold mb-1 text-gray-800 dark:text-gray-200">Province</label>
+                            <input type="text" name="province" required class="w-full p-2 border rounded dark:bg-gray-800 dark:text-white" placeholder="e.g. Metro Manila" />
                         </div>
 
                         <div class="mb-4">

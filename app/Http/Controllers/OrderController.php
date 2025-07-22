@@ -21,7 +21,11 @@ class OrderController extends Controller
     public function checkout(Request $request)
     {
         $request->validate([
-            'address' => 'required|string|max:255',
+            'house_number' => 'required|string|max:50',
+            'street_name' => 'required|string|max:100',
+            'barangay' => 'required|string|max:100',
+            'city' => 'required|string|max:100',
+            'province' => 'required|string|max:100',
         ]);
 
         $user = Auth::user();
@@ -31,13 +35,14 @@ class OrderController extends Controller
             return back()->with('error', 'Your cart is empty.');
         }
 
-        // Start DB transaction to ensure data consistency
+        // 🔧 Concatenate full address
+        $fullAddress = "{$request->house_number}, {$request->street_name}, Brgy. {$request->barangay}, {$request->city}, {$request->province}";
+
         DB::beginTransaction();
 
         try {
             $total = 0;
 
-            // Check for stock availability
             foreach ($cartItems as $item) {
                 if ($item->guitar->stock < $item->quantity) {
                     DB::rollBack();
@@ -47,16 +52,14 @@ class OrderController extends Controller
                 $total += $item->guitar->price * $item->quantity;
             }
 
-            // Create Order
             $order = Order::create([
                 'user_id' => $user->id,
                 'total_price' => $total,
                 'status' => 'pending',
-                'address' => $request->address,
+                'address' => $fullAddress,
                 'payment_method' => 'cod',
             ]);
 
-            // Create Order Items and reduce stock
             foreach ($cartItems as $item) {
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -65,11 +68,9 @@ class OrderController extends Controller
                     'price' => $item->guitar->price,
                 ]);
 
-                // Deduct stock
                 $item->guitar->decrement('stock', $item->quantity);
             }
 
-            // Clear Cart
             Cart::where('user_id', $user->id)->delete();
 
             DB::commit();
@@ -80,6 +81,7 @@ class OrderController extends Controller
             return back()->with('error', 'Checkout failed. Please try again.');
         }
     }
+
 
     public function cancel($id)
     {
