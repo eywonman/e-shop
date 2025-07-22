@@ -12,11 +12,8 @@ class EnsureAdminOtpVerified
     {
         $user = Auth::user();
 
-        if (!$user || !$user->hasRole('admin')) {
-            return $next($request);
-        }
-
-        if ($user && $user->hasRole('admin')) {
+        // Only apply OTP check if user is admin or super-admin
+        if ($user && ($user->hasRole('admin') || $user->hasRole('super-admin'))) {
             if (!session('admin_otp_verified')) {
                 return redirect()->route('admin.otp.form');
             }
@@ -25,4 +22,3 @@ class EnsureAdminOtpVerified
         return $next($request);
     }
 }
-

@@ -15,15 +15,20 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create roles if they don't exist
+        Role::firstOrCreate(['name' => 'super-admin']);
         Role::firstOrCreate(['name' => 'admin']);
         Role::firstOrCreate(['name' => 'user']);
 
         // Assign "admin" role to the first user (or create one)
         $user = User::firstOrCreate(
             ['email' => 'arron.figueroa00@gmail.com'],
-            ['name' => 'Super Admin', 'password' => bcrypt('password')]
+            [
+                'name' => 'Super Admin',
+                'first_name' => 'Super',
+                'last_name' => 'Admin',
+                'password' => bcrypt('password')]
         );
 
-        $user->assignRole('admin');
+        $user->assignRole('super-admin');
     }
 }

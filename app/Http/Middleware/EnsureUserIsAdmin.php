@@ -9,7 +9,7 @@ class EnsureUserIsAdmin
 {
     public function handle($request, Closure $next)
     {
-        if (! Auth::check() || ! Auth::user()->hasRole('admin')) {
+        if (!Auth::check() || !Auth::user()->hasAnyRole(['admin', 'super-admin'])) {
             abort(403, 'Unauthorized');
         }
 
