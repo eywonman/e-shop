@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -30,7 +31,7 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'last_name' => $input['last_name'],
             'first_name' => $input['first_name'],
             'middle_name' => $input['middle_name'] ?? null,
@@ -39,5 +40,8 @@ class CreateNewUser implements CreatesNewUsers
             'contact_number' => $input['contact_number'],
             'password' => Hash::make($input['password']),
         ]);
+        $user->assignRole('user');
+
+        return $user;
     }
 }
