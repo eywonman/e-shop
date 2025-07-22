@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <x-authentication-card-logo />
+            🎸 A&A Guitar Shop
         </x-slot>
 
         <x-validation-errors class="mb-4" />
@@ -9,25 +9,45 @@
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
+            <!-- Last Name -->
             <div>
-                <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                <x-label for="last_name" value="Last Name" />
+                <x-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" placeholder="e.g. Dela Cruz" required autofocus />
+            </div>
+
+            <!-- First Name -->
+            <div class="mt-4">
+                <x-label for="first_name" value="First Name" />
+                <x-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" placeholder="e.g. Juan" required />
+            </div>
+
+            <!-- Middle Name -->
+            <div class="mt-4">
+                <x-label for="middle_name" value="Middle Name (Optional)" />
+                <x-input id="middle_name" class="block mt-1 w-full" type="text" name="middle_name" :value="old('middle_name')" placeholder="e.g. Tamad" />
+            </div>
+
+            <!-- Contact Number -->
+            <div class="mt-4">
+                <x-label for="contact_number" value="Contact Number" />
+                <x-input id="contact_number" class="block mt-1 w-full" type="tel" name="contact_number" maxlength="11" pattern="\d{11}" :value="old('contact_number')" placeholder="e.g. 09123456789" required />
             </div>
 
             <div class="mt-4">
                 <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" placeholder="e.g. juan@example.com" required autocomplete="username" />
             </div>
 
             <div class="mt-4">
                 <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+                <x-input id="password" class="block mt-1 w-full" type="password" name="password" placeholder="Enter your password" required autocomplete="new-password" />
             </div>
 
             <div class="mt-4">
                 <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" placeholder="Re-enter your password" required autocomplete="new-password" />
             </div>
+
 
             <div style="margin-top: 25px;">
             {!! NoCaptcha::renderJs() !!}

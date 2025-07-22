@@ -1,7 +1,7 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <x-authentication-card-logo />
+            🎸 A&A Guitar Shop
         </x-slot>
 
         <x-validation-errors class="mb-4" />
