@@ -14,8 +14,22 @@ class CartController extends Controller
             ->where('user_id', Auth::id())
             ->get();
 
-        return view('cart.index', compact('cartItems'));
+        // ✅ Remove out-of-stock items
+        foreach ($cartItems as $item) {
+            if ($item->guitar && $item->guitar->stock <= 0) {
+                $item->delete();
+            }
+        }
+
+        // Re-fetch the cart items after removing invalid ones
+        $cartItems = Cart::with('guitar')
+            ->where('user_id', Auth::id())
+            ->get();
+
+        return view('cart.index', compact('cartItems'))
+            ->with('success', 'Out-of-stock items have been removed from your cart.');
     }
+
 
     public function update(Request $request, $id)
     {
