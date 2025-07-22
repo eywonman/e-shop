@@ -12,7 +12,7 @@
                 {{-- Order Header --}}
                 <div class="mb-4">
                     <h3 class="text-xl font-extrabold text-slate-800 dark:text-slate-200">
-                        Order #{{ $order->id }}
+                        {{ $order->order_number }}
                     </h3>
 
                     <p class="text-sm text-gray-700 dark:text-gray-300">

@@ -32,17 +32,17 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
+            Forms\Components\TextInput::make('order_number')
+                ->label('Order #')
+                ->disabled(),
+
             Forms\Components\TextInput::make('user_email')
                 ->label('User Email')
                 ->disabled()
                 ->afterStateHydrated(function ($component, $state, $record) {
                     $component->state(optional($record->user)->email);
-                }),
-
-            Forms\Components\TextInput::make('address')
-                ->required()
-                ->disabled(),
-
+                }), 
+            
             Forms\Components\Repeater::make('items')
                 ->label('Order Items')
                 ->relationship()
@@ -66,6 +66,10 @@ class OrderResource extends Resource
                 ->columns(3)
                 ->disabled()
                 ->dehydrated(false),
+            
+            Forms\Components\TextInput::make('address')
+                ->required()
+                ->disabled(), 
 
             Forms\Components\TextInput::make('total_price')
                 ->numeric()
@@ -88,6 +92,11 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('order_number')
+                ->label('Order #')
+                ->searchable()
+                ->sortable(),
+
                 Tables\Columns\TextColumn::make('user.email')
                     ->label('Customer Email')
                     ->searchable(),

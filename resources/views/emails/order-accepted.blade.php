@@ -44,8 +44,11 @@
 
         <p>Thank you for shopping with us! Your order has been accepted and is now being prepared for shipment.</p>
 
-        <p><strong>Delivery Address:</strong><br>
-        {{ $order->address }}</p>
+        <div class="details">
+            <p><strong>Order #:</strong> {{ $order->order_number ?? 'ORD-N/A' }}</p>
+            <p><strong>Address Provided:</strong><br>
+            {{ $order->address }}</p>
+        </div>
 
         <h4>Order Details:</h4>
         <table class="items">

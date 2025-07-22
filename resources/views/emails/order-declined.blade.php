@@ -45,6 +45,12 @@
 
         <p>We regret to inform you that your recent guitar order has been declined. Please review the details below:</p>
 
+        <div class="details">
+            <p><strong>Order #:</strong> {{ $order->order_number ?? 'ORD-N/A' }}</p>
+            <p><strong>Address Provided:</strong><br>
+            {{ $order->address }}</p>
+        </div>
+
         <h4>Order Details:</h4>
         <table class="items">
             <thead>
@@ -66,9 +72,6 @@
         </table>
 
         <p><strong>Total Attempted Order Amount:</strong> ₱{{ number_format($order->total_price, 2) }}</p>
-
-        <p><strong>Address Provided:</strong><br>
-        {{ $order->address }}</p>
 
         <div class="footer">
             <p>If this was a mistake or you would like to reorder, feel free to visit our website and try again.</p>

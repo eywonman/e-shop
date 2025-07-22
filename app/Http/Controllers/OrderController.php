@@ -35,6 +35,10 @@ class OrderController extends Controller
             return back()->with('error', 'Your cart is empty.');
         }
 
+        do {
+            $orderNumber = 'ORD-' . strtoupper(\Str::random(8));
+        } while (Order::where('order_number', $orderNumber)->exists());
+
         // 🔧 Concatenate full address
         $fullAddress = "{$request->house_number}, {$request->street_name}, Brgy. {$request->barangay}, {$request->city}, {$request->province}";
 
@@ -54,6 +58,7 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'user_id' => $user->id,
+                'order_number' => $orderNumber,
                 'total_price' => $total,
                 'status' => 'pending',
                 'address' => $fullAddress,
